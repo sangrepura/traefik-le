@@ -7,7 +7,6 @@ services:
       - --log.level=INFO
       - --entrypoints.web.address=:80
       - --entrypoints.websecure.address=:443
-      - --entrypoints.postgres.address=:5432
       - --entrypoints.postgres-master.address=:5000
       - --entrypoints.postgres-replica.address=:5001
       - --entrypoints.patroni-api.address=:8008
@@ -20,15 +19,12 @@ services:
       - --api
       - --api.dashboard=true
       - --certificatesresolvers.leresolver.acme.caserver=https://acme-v02.api.letsencrypt.org/directory
-      # update your email here
       - --certificatesresolvers.leresolver.acme.email=support@coastalsites.dev
-      # Make sure the this file is available and permission is set correctly
       - --certificatesresolvers.leresolver.acme.storage=/le/acme.json
       - --certificatesresolvers.leresolver.acme.tlschallenge=true
     ports:
       - "80:80"
       - "443:443"
-      - "5432:5432"
       - "5000:5000"
       - "5001:5001"
       - "8008:8008"
@@ -37,34 +33,18 @@ services:
       - traefik-public
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      # Make sure the volume folder is created
       - "/mnt/data/traefik/acme.json:/le/acme.json"
       - "/mnt/data/traefik/dynamic:/etc/traefik/dynamic"
     deploy:
       labels:
-        # Dashboard
-        - "traefik.enable=true" 
+        - "traefik.enable=true"
         - "traefik.http.routers.traefik.rule=Host(`traefik.coastalsites.dev`)"
         - "traefik.http.routers.traefik.service=api@internal"
         - "traefik.http.services.traefik.loadbalancer.server.port=8080"
-        - "traefik.http.services.traefik.loadbalancer.server.port=8008"
         - "traefik.http.routers.traefik.tls.certresolver=leresolver"
         - "traefik.http.routers.traefik.entrypoints=websecure"
         - "traefik.http.routers.traefik.middlewares=authtraefik"
-        # Change the auth password here
-        - "traefik.http.middlewares.authtraefik.basicauth.users=admin:$$2y$$05$$xW72ue5zc3kabA1k//hn1ut7xMCX6Zdw6hHKpmIRqKsJWsJqJFSCa" # user/password
-
-        # global redirect to https
-        - "traefik.http.routers.http-catchall.rule=hostregexp(`{host:.+}`)"
-        - "traefik.http.routers.http-catchall.entrypoints=web"
-        - "traefik.http.routers.http-catchall.middlewares=redirect-to-https"
-
-        # middlewares
-        #redirect
-        - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
-        # rate limits in seconds
-        - "traefik.http.middlewares.test-ratelimit.ratelimit.average=100"
-        - "traefik.http.middlewares.test-ratelimit.ratelimit.burst=200"
+        - "traefik.http.middlewares.authtraefik.basicauth.users=admin:$$2y$$05$$xW72ue5zc3kabA1k//hn1ut7xMCX6Zdw6hHKpmIRqKsJWsJqJFSCa"
 
 networks:
   traefik-public:

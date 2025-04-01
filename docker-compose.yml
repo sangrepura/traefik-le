@@ -8,7 +8,6 @@ services:
       - --entrypoints.web.address=:80
       - --entrypoints.websecure.address=:443
       - --entrypoints.postgres.address=:5432
-      - --providers.docker=true
       - --providers.swarm.exposedbydefault=false
       - --providers.swarm.endpoint=unix:///var/run/docker.sock
       - --providers.swarm.network=traefik-public
@@ -42,8 +41,18 @@ services:
         - "traefik.http.routers.traefik.middlewares=authtraefik"
         - "traefik.http.middlewares.authtraefik.basicauth.users=admin:$$2y$$05$$xW72ue5zc3kabA1k//hn1ut7xMCX6Zdw6hHKpmIRqKsJWsJqJFSCa"
 
+        # global redirect to https
+        - "traefik.http.routers.http-catchall.rule=hostregexp(`{host:.+}`)"
+        - "traefik.http.routers.http-catchall.entrypoints=web"
+        - "traefik.http.routers.http-catchall.middlewares=redirect-to-https"
+
+        # middlewares
+        #redirect
+        - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+        # rate limits in seconds
+        - "traefik.http.middlewares.test-ratelimit.ratelimit.average=100"
+        - "traefik.http.middlewares.test-ratelimit.ratelimit.burst=200"
+
 networks:
   traefik-public:
-    external: true
-  app-internal:
     external: true

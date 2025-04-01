@@ -7,12 +7,10 @@ services:
       - --log.level=INFO
       - --entrypoints.web.address=:80
       - --entrypoints.websecure.address=:443
-      - --entrypoints.tcp.address=:5433
+      - --entrypoints.postgres.address=:5433
       - --providers.swarm.exposedbydefault=false
       - --providers.swarm.endpoint=unix:///var/run/docker.sock
       - --providers.swarm.network=traefik-public
-      - --providers.file.directory=/etc/traefik/dynamic
-      - --providers.file.watch=true
       - --api
       - --api.dashboard=true
       - --certificatesresolvers.leresolver.acme.caserver=https://acme-v02.api.letsencrypt.org/directory
@@ -22,7 +20,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "5432:5432"
+      - "5433:5432"
     networks:
       - traefik-public
     volumes:

@@ -7,9 +7,7 @@ services:
       - --log.level=INFO
       - --entrypoints.web.address=:80
       - --entrypoints.websecure.address=:443
-      - --entrypoints.postgres-master.address=:5000
-      - --entrypoints.postgres-replica.address=:5001
-      - --entrypoints.patroni-api.address=:8008
+      - --entrypoints.postgres-master.address=:5432
       - --providers.docker=true
       - --providers.swarm.exposedbydefault=false
       - --providers.swarm.endpoint=unix:///var/run/docker.sock
@@ -25,9 +23,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "5000:5000"
-      - "5001:5001"
-      - "8008:8008"
+      - "5432:5432"
     networks:
       - app-internal
       - traefik-public

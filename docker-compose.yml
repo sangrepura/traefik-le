@@ -27,10 +27,6 @@ services:
       - "5432:5432"
     networks:
       - traefik-public
-    providers:
-      file:
-        directory: /etc/traefik/dynamic
-        watch: true
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       # Make sure the volume folder is created

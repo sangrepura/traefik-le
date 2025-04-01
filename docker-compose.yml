@@ -8,6 +8,9 @@ services:
       - --entrypoints.web.address=:80
       - --entrypoints.websecure.address=:443
       - --entrypoints.postgres.address=:5432
+      - --entryPoints.postgres-master.address=:5000
+      - --entrypoints.postgres-replica.address=:5001
+      - --entrypoints.patroni-api.address=:8008
       - --providers.swarm.exposedbydefault=false
       - --providers.swarm.endpoint=unix:///var/run/docker.sock
       - --providers.swarm.network=traefik-public
@@ -35,7 +38,9 @@ services:
     deploy:
       labels:
         # Dashboard
-        - "traefik.enable=true"
+        - "traefik.enable=true" 
+        - "traefik.http.serverTransport.forwardingTimeouts.dialTimeout=4s"
+        - "traefik.http.serverTransport.forwardingTimeouts.responseHeaderTimeout=30m"
         - "traefik.http.routers.traefik.rule=Host(`traefik.coastalsites.dev`)"
         - "traefik.http.routers.traefik.service=api@internal"
         - "traefik.http.services.traefik.loadbalancer.server.port=8080"

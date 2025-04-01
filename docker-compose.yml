@@ -27,7 +27,9 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "5432:5432"
+      - "5000:5000"
+      - "5001:5001"
+      - "8008:8008"
     networks:
       - traefik-public
     volumes:
@@ -39,8 +41,6 @@ services:
       labels:
         # Dashboard
         - "traefik.enable=true" 
-        - "traefik.http.serverTransport.forwardingTimeouts.dialTimeout=4s"
-        - "traefik.http.serverTransport.forwardingTimeouts.responseHeaderTimeout=30m"
         - "traefik.http.routers.traefik.rule=Host(`traefik.coastalsites.dev`)"
         - "traefik.http.routers.traefik.service=api@internal"
         - "traefik.http.services.traefik.loadbalancer.server.port=8080"

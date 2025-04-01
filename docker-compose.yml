@@ -32,6 +32,9 @@ services:
       - "8008:8008"
     networks:
       - traefik-public
+      - postgres-master
+      - postgres-replica
+      - patroni-api
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       # Make sure the volume folder is created

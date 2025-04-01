@@ -36,9 +36,6 @@ services:
       labels:
         # Dashboard
         - "traefik.enable=true"
-        # Change the host url here
-        - "traefik.providers.file.directory.directory=/etc/traefik/dynamic"
-        - "traefik.providers.file.directory.watch=true"
         - "traefik.http.routers.traefik.rule=Host(`traefik.coastalsites.dev`)"
         - "traefik.http.routers.traefik.service=api@internal"
         - "traefik.http.services.traefik.loadbalancer.server.port=8080"

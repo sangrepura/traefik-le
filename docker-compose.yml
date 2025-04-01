@@ -8,6 +8,13 @@ services:
       - --entrypoints.web.address=:80
       - --entrypoints.websecure.address=:443
       - --entrypoints.postgres.address=:5432
+      - --entrypoints.postgres-master.address=:5432
+      - --entrypoints.postgres-replica.address=:5432
+      - --entrypoints.patroni-api.address=:8008
+      - --entrypoints.patroni-api.http.redirections.entryPoint.to=websecure
+      - --entrypoints.patroni-api.http.redirections.entryPoint.scheme=https
+      - --entrypoints.patroni-api.http.redirections.entryPoint.permanent=true
+      - --providers.docker=true
       - --providers.swarm.exposedbydefault=false
       - --providers.swarm.endpoint=unix:///var/run/docker.sock
       - --providers.swarm.network=traefik-public

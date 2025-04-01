@@ -69,3 +69,5 @@ services:
 networks:
   traefik-public:
     external: true
+  app-internal:
+    external: true
